@@ -1,6 +1,9 @@
 package parser
 
-import "path"
+import (
+	"net/url"
+	"path"
+)
 
 // URLFilename returns the file name from a given url
 func URLFilename(filename string) string {
@@ -11,6 +14,10 @@ func URLFilename(filename string) string {
 		>>> https://dribbble.com/css/home.css
 		<<< home.css
 	*/
+	u, err := url.Parse(filename)
+	if err == nil {
+		return path.Base(u.Path)
+	}
 	return path.Base(filename)
 }
 
@@ -23,5 +30,9 @@ func PathFilename(givenPath string) string {
 		>>> /js/googleanalytics.js
 		<<< googleanalytics.js
 	*/
+	u, err := url.Parse(givenPath)
+	if err == nil {
+		return path.Base(u.Path)
+	}
 	return path.Base(givenPath)
 }

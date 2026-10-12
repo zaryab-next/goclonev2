@@ -2,6 +2,7 @@ package crawler
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"testing"
 
@@ -73,5 +74,17 @@ func TestCollectorTests(t *testing.T) {
 	TsUrl = ts.URL
 	for testName, testFuntion := range collectorTests {
 		t.Run(testName, testFuntion)
+	}
+}
+
+func TestDetectBotChallengeIgnoresNonHTMLAssets(t *testing.T) {
+	js := []byte(`function f(){throw new Error("Access denied")}`)
+	resp := &http.Response{StatusCode: 200, Header: http.Header{"Content-Type": {"application/javascript"}}}
+	if err := detectBotChallenge(resp, js); err != nil {
+		t.Errorf("JS containing 'access denied' flagged as challenge: %v", err)
+	}
+	page := []byte("<html><title>Access Denied</title></html>")
+	if err := detectBotChallenge(&http.Response{StatusCode: 200, Header: http.Header{}}, page); err == nil {
+		t.Error("HTML challenge page was not detected")
 	}
 }

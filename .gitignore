@@ -4,3 +4,5 @@
 pkg/parser/domains.csv
 **/*dist
 **/*.idea/
+# cloned websites output
+downloads/

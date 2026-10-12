@@ -5,14 +5,18 @@ import (
 	"os"
 )
 
+// DownloadsDir is the folder, relative to the working directory, that every
+// cloned site is written into.
+const DownloadsDir = "downloads"
+
 // CreateProject initializes the project directory and returns the path to the project
 // TODO make function more modular to obtain different html files
 func CreateProject(projectName string) string {
 	// current workin directory
 	path := currentDirectory()
 
-	// define project path
-	projectPath := path + "/" + projectName
+	// define project path: clones live under <cwd>/downloads (git-ignored)
+	projectPath := path + "/" + DownloadsDir + "/" + projectName
 
 	// create base directory
 	err := os.MkdirAll(projectPath, 0777)
